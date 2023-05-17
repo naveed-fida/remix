@@ -1,7 +1,7 @@
 import * as path from "path";
 import { builtinModules as nodeBuiltins } from "module";
 import * as esbuild from "esbuild";
-import { polyfillNode as NodeModulesPolyfillPlugin } from "esbuild-plugin-polyfill-node";
+import { nodeModulesPolyfillPlugin } from "esbuild-plugins-node-modules-polyfill";
 
 import type { RemixConfig } from "../../config";
 import { type Manifest } from "../../manifest";
@@ -132,7 +132,7 @@ const createEsbuildConfig = (
     externalPlugin(/^https?:\/\//, { sideEffects: false }),
     mdxPlugin(ctx),
     emptyModulesPlugin(ctx, /\.server(\.[jt]sx?)?$/),
-    NodeModulesPolyfillPlugin(),
+    nodeModulesPolyfillPlugin(),
     externalPlugin(/^node:.*/, { sideEffects: false }),
     {
       // TODO: should be removed when error handling for compiler is improved
