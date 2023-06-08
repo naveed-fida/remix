@@ -135,49 +135,49 @@ const createEsbuildConfig = (
     emptyModulesPlugin(ctx, /\.server(\.[jt]sx?)?$/),
     nodeModulesPolyfillPlugin(),
     externalPlugin(/^node:.*/, { sideEffects: false }),
-    {
-      // TODO: should be removed when error handling for compiler is improved
-      name: "warn-on-unresolved-imports",
-      setup: (build) => {
-        build.onResolve({ filter: /.*/ }, (args) => {
-          if (!isBareModuleId(resolvePath(args.path))) {
-            return undefined;
-          }
-
-          if (args.path === "remix:hmr") {
-            return undefined;
-          }
-
-          let packageName = getNpmPackageName(args.path);
-          let pkgManager = detectPackageManager() ?? "npm";
-          if (
-            ctx.options.onWarning &&
-            !isNodeBuiltIn(packageName) &&
-            !/\bnode_modules\b/.test(args.importer) &&
-            !args.path.endsWith(".css") &&
-            !isCssSideEffectImportPath(args.path) &&
-            // Silence spurious warnings when using Yarn PnP. Yarn PnP doesn’t use
-            // a `node_modules` folder to keep its dependencies, so the above check
-            // will always fail.
-            (pkgManager === "npm" ||
-              (pkgManager === "yarn" && process.versions.pnp == null))
-          ) {
-            try {
-              require.resolve(args.path);
-            } catch (error: unknown) {
-              ctx.options.onWarning(
-                `The path "${args.path}" is imported in ` +
-                  `${path.relative(process.cwd(), args.importer)} but ` +
-                  `"${args.path}" was not found in your node_modules. ` +
-                  `Did you forget to install it?`,
-                args.path
-              );
-            }
-          }
-          return undefined;
-        });
-      },
-    } as esbuild.Plugin,
+    // {
+    //   // TODO: should be removed when error handling for compiler is improved
+    //   name: "warn-on-unresolved-imports",
+    //   setup: (build) => {
+    //     build.onResolve({ filter: /.*/ }, (args) => {
+    //       if (!isBareModuleId(resolvePath(args.path))) {
+    //         return undefined;
+    //       }
+    //
+    //       if (args.path === "remix:hmr") {
+    //         return undefined;
+    //       }
+    //
+    //       let packageName = getNpmPackageName(args.path);
+    //       let pkgManager = detectPackageManager() ?? "npm";
+    //       if (
+    //         ctx.options.onWarning &&
+    //         !isNodeBuiltIn(packageName) &&
+    //         !/\bnode_modules\b/.test(args.importer) &&
+    //         !args.path.endsWith(".css") &&
+    //         !isCssSideEffectImportPath(args.path) &&
+    //         // Silence spurious warnings when using Yarn PnP. Yarn PnP doesn’t use
+    //         // a `node_modules` folder to keep its dependencies, so the above check
+    //         // will always fail.
+    //         (pkgManager === "npm" ||
+    //           (pkgManager === "yarn" && process.versions.pnp == null))
+    //       ) {
+    //         try {
+    //           require.resolve(args.path);
+    //         } catch (error: unknown) {
+    //           ctx.options.onWarning(
+    //             `The path "${args.path}" is imported in ` +
+    //               `${path.relative(process.cwd(), args.importer)} but ` +
+    //               `"${args.path}" was not found in your node_modules. ` +
+    //               `Did you forget to install it?`,
+    //             args.path
+    //           );
+    //         }
+    //       }
+    //       return undefined;
+    //     });
+    //   },
+    // } as esbuild.Plugin,
   ];
 
   if (ctx.options.mode === "development" && ctx.config.future.unstable_dev) {
